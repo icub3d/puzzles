@@ -1,0 +1,54 @@
+pub struct Solution;
+
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn min_path_sum(grid: Vec<Vec<i32>>) -> i32 {
+        let mut memo = HashMap::new();
+        Self::min_path_sum_helper(&grid, 0, 0, &mut memo)
+    }
+
+    fn min_path_sum_helper(
+        grid: &Vec<Vec<i32>>,
+        row: usize,
+        col: usize,
+        memo: &mut HashMap<(usize, usize), i32>,
+    ) -> i32 {
+        if let Some(&v) = memo.get(&(row, col)) {
+            return v;
+        }
+        let mut min = 0;
+        if row == grid.len() - 1 && col == grid[0].len() - 1 {
+            min = grid[row][col];
+        } else if row == grid.len() - 1 {
+            min = grid[row][col] + Self::min_path_sum_helper(grid, row, col + 1, memo);
+        } else if col == grid[0].len() - 1 {
+            min = grid[row][col] + Self::min_path_sum_helper(grid, row + 1, col, memo);
+        } else {
+            min = grid[row][col]
+                + std::cmp::min(
+                    Self::min_path_sum_helper(grid, row + 1, col, memo),
+                    Self::min_path_sum_helper(grid, row, col + 1, memo),
+                );
+        }
+        memo.insert((row, col), min);
+        min
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        assert_eq!(
+            Solution::min_path_sum(vec![vec![1, 2, 3], vec![4, 5, 6]]),
+            12
+        );
+        assert_eq!(
+            Solution::min_path_sum(vec![vec![1, 3, 1], vec![1, 5, 1], vec![4, 2, 1]]),
+            7
+        );
+    }
+}
