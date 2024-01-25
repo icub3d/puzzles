@@ -195,3 +195,4 @@ cython_debug/
 input
 test_input
 test
+.projectile
