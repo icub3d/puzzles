@@ -229,7 +229,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn simulate_loop(a: usize) -> usize {
     let mut b = a % 8;
     b = b ^ 3;
-    let c = a / (1 << b);
+    let c = a >> b;
     b = b ^ c;
     b = b ^ 3;
     b % 8
@@ -237,9 +237,12 @@ fn simulate_loop(a: usize) -> usize {
 
 fn find_register(program: &[usize]) -> Option<usize> {
     let mut stack = vec![(0, program.len())];
+    let mut counter = 0;
     while let Some((a, depth)) = stack.pop() {
+        counter += 1;
         // If we ever get to the beginning of the program, we have a solution.
         if depth == 0 {
+            println!("counter: {}", counter);   
             return Some(a);
         }
 
